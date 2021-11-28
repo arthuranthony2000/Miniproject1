@@ -31,10 +31,8 @@
         }
     </style>
 
-    <form action="#" method="get" target="_self" autocomplete="off" id="search_form">
-        <input type="text" id="search_anime_input" name="search_anime_input"><br><br>
-        <input onclick=orderByTitle() type="submit" value="Pesquisar">
-    </form>
+    <input type="text" id="search_anime_input"><br><br>
+    <button id="btn_montar">Pesquisar</button>
 
     <table id="animes">
         <thead>
@@ -48,94 +46,27 @@
         </tbody>
 
     </table>
-
-
-
+    
     <script>
+        let animes = []
         let orderTitle = 1;
         let orderYear = 1;
         let orderScore = 1;
 
         function get_animes(anime = "death") {
-            animes_fetch = []
             alert("Os dados estão sendo carregados")
             fetch(`https://api.jikan.moe/v3/search/anime?q=${anime}`)
                 .then(T => T.json())
-                .then(T => T.results.map((e) => {
-                    animes_fetch.push(e)
-                }))
-                .then(animes = animes_fetch)
-        }
-
-        function get_input_animes() {
-            var form = document.getElementById('search_form');
-            var campo = document.getElementById('search_anime_input');
-
-            form.addEventListener('submit', function (e) {
-                if (campo.value.length > 3) {
-                    get_animes(campo.value)
+                .then(T => {
+                    animes = T.results || []
                     montarTabela()
-                    e.preventDefault()
-                } else{
-                    alert("Você deve digitar mais do que 3 caracteres")
-                }
-            });
+                })
         }
-
-        var animes = [
-
-            {
-
-                url: "https://myanimelist.net/anime/1535/Death_Note",
-
-                image_url: "https://cdn.myanimelist.net/images/anime/9/9453.jpg?s=b89e80691ac5cc0610847ccbe0b8424a",
-
-                title: "Death Note",
-
-                score: 8.63,
-
-                start_date: "2006-10-04T00:00:00+00:00",
-
-            },
-
-            {
-
-                url: "https://myanimelist.net/anime/28223/Death_Parade",
-
-                image_url: "https://cdn.myanimelist.net/images/anime/5/71553.jpg?s=68833377dab9077cd7847c91eec46f08",
-
-                title: "Death Parade",
-
-                score: 8.18,
-
-                start_date: "2015-01-10T00:00:00+00:00",
-
-            },
-
-            {
-
-                url: "https://myanimelist.net/anime/14353/Death_Billiards",
-
-                image_url: "https://cdn.myanimelist.net/images/anime/11/48721.jpg?s=4728f1efeabefb313634e64ac91f514b",
-
-                title: "Death Billiards",
-
-                score: 7.91,
-
-                start_date: "2013-03-02T00:00:00+00:00",
-
-            }
-
-        ]
-
-
 
         const convertDate = (d) => {
             const date = new Date(Date.parse(d))
             return `${date.getFullYear()}`
         }
-
-
 
         function orderByTitle() {
             animes_update = []
@@ -240,16 +171,18 @@
 
 
         function montarTabela() {
-            animes.forEach(anime => {
+            document.getElementById("tbody_animes").innerHTML = ""
 
+            animes.forEach(anime => {
                 // criação dos elementos html
+                
                 let tr_row = document.createElement("tr");
                 let td_title = document.createElement("td");
                 let td_score = document.createElement("td");
                 let td_start_date = document.createElement("td");
                 let td_image_url = document.createElement("td");
                 let img_image = document.createElement("img");
-
+                
                 // definição dos valores
 
                 td_title.innerText = anime.title;
@@ -272,9 +205,15 @@
             })
         }
 
-        get_input_animes()
-        montarTabela()
-        get_animes()
+        let btn_search = document.getElementById("btn_montar").addEventListener('click', () => {
+            let input_value = document.getElementById("search_anime_input").value
+            get_animes(input_value)
+        })
+
+        window.onload = () => {
+            get_animes()
+        }
+
     </script>
 
 </body>

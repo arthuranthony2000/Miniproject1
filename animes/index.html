@@ -207,7 +207,11 @@
 
         let btn_search = document.getElementById("btn_montar").addEventListener('click', () => {
             let input_value = document.getElementById("search_anime_input").value
-            get_animes(input_value)
+            if(input_value.length >= 3){
+                get_animes(input_value)
+            } else{
+                alert("Você deve digitar mais do que dois caracteres")
+            }
         })
 
         window.onload = () => {
